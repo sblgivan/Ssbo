@@ -4,33 +4,178 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SBBot Trading Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800">SBBot Trading Dashboard</h1>
-        </header>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">Bot Controls</h2>
-                <div class="flex space-x-4">
-                    <button id="startBot" class="bg-green-500 text-white px-6 py-2 rounded">Start Bot</button>
-                    <button id="stopBot" class="bg-red-500 text-white px-6 py-2 rounded">Stop Bot</button>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-robot text-blue-600 text-2xl mr-2"></i>
+                    <span class="font-bold text-xl">SBBot Trading</span>
                 </div>
-                <div id="status" class="mt-4 text-lg"></div>
+                <div class="flex items-center space-x-4">
+                    <span id="connectionStatus" class="text-sm">
+                        <i class="fas fa-circle text-green-500"></i> Connected
+                    </span>
+                    <span id="currentTime" class="text-sm"></span>
+                </div>
             </div>
-            
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">Trading Statistics</h2>
-                <div id="stats" class="space-y-2">
-                    <!-- Stats will be populated by JavaScript -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <i class="fas fa-wallet text-blue-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Balance</p>
+                        <p id="balance" class="text-xl font-bold">$0.00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-full">
+                        <i class="fas fa-chart-line text-green-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Profit Today</p>
+                        <p id="profitToday" class="text-xl font-bold">$0.00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 rounded-full">
+                        <i class="fas fa-exchange-alt text-purple-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Total Trades</p>
+                        <p id="totalTrades" class="text-xl font-bold">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-full">
+                        <i class="fas fa-percentage text-yellow-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Win Rate</p>
+                        <p id="winRate" class="text-xl font-bold">0%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Bot Controls -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Bot Controls</h2>
+                <div class="space-y-4">
+                    <div class="flex space-x-4">
+                        <button id="startBot" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition duration-200">
+                            <i class="fas fa-play mr-2"></i> Start Bot
+                        </button>
+                        <button id="stopBot" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition duration-200">
+                            <i class="fas fa-stop mr-2"></i> Stop Bot
+                        </button>
+                    </div>
+                    <div id="status" class="p-4 bg-gray-100 rounded-lg text-center">
+                        Bot is currently stopped
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6 lg:col-span-2">
+                <h2 class="text-xl font-semibold mb-4">Performance Chart</h2>
+                <div id="chart" class="h-64 bg-gray-50 rounded-lg">
+                    <!-- Chart will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Recent Trades -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Recent Trades</h2>
+                <div id="recentTrades" class="space-y-2 h-64 overflow-y-auto">
+                    <!-- Trades will be populated here -->
+                </div>
+            </div>
+
+            <!-- Trading Logs -->
+            <div class="bg-white rounded-lg shadow-lg p-6 lg:col-span-2">
+                <h2 class="text-xl font-semibold mb-4">Trading Logs</h2>
+                <div id="tradingLogs" class="h-64 overflow-y-auto bg-gray-50 p-4 rounded-lg font-mono text-sm">
+                    <!-- Logs will be populated here -->
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-96">
+            <h2 class="text-xl font-semibold mb-4">Bot Settings</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Trade Amount</label>
+                    <input type="number" id="tradeAmount" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Strategy</label>
+                    <select id="strategy" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <option value="martingale">Martingale</option>
+                        <option value="fibonacci">Fibonacci</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button onclick="closeSettingsModal()" class="px-4 py-2 bg-gray-200 rounded-md">Cancel</button>
+                    <button onclick="saveSettings()" class="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Sample chart initialization
+        const ctx = document.getElementById('chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1h', '2h', '3h', '4h', '5h', 'Now'],
+                datasets: [{
+                    label: 'Balance History',
+                    data: [0, 0, 0, 0, 0, 0],
+                    borderColor: 'rgb(59, 130, 246)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
 </body>
-</html>
+    </html>
