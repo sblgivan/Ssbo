@@ -1,0 +1,18 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+button {
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+#status {
+    font-weight: 500;
+    color: #4a5568;
+}
